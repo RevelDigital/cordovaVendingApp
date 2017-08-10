@@ -165,65 +165,179 @@
         function updateMachines(){
             var apiKey= "PvykAYhri1sINCnWhEqC3A";
             var imageJSON;
-            $.getJSON("http://api.reveldigital.com/api/media?api_key="+apiKey, function (data) {
-                imageJSON = data;
-            }, 1000);
-            var regKeyArray = [];
-            $.getJSON("http://api.reveldigital.com/api/devices?api_key="+apiKey+"&include_snap=false&group_name=VendingMachines", function (data) {  
-                for(var x = 0; x<data.length; x++){
-                    regKeyArray.push(data[x]["registration_key"]);
-                }
-                alert("gotRegKeys");
-                var deviceJson;
-                for(var y = 0; y<regKeyArray.length; y++) {
-                    $.getJSON("https://svc1.reveldigital.com/v2/device/schedule/get/" + regKeyArray[y] + "?format=json", function (data) {
-                        alert("Processing "+data["reveldigital"]["device"]["name"]);
-                        var jsonString = "{\"id\":\""+encodeURIComponent(data["reveldigital"]["device"]["id"])+"\",\"contents\":null,\"name\":\""+encodeURIComponent(data["reveldigital"]["device"]["name"])+"\",\"location\":null}";
-                        try {
-                            deviceJson = JSON.parse(jsonString);
-                            try{
-                                var locationJsonString = "{\"address\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["address1"])+"\",\"city\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["city"])+"\",\"county\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["county"])+"\",\"state\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["state"])+"\",\"postal_code\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["postalcode"])+"\",\"country\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["country"])+"\",\"latitude\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["latitude"])+"\",\"longitude\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["longitude"])+"\"}";
-                                var locationJson = JSON.parse(locationJsonString);
-                                deviceJson["location"] = locationJson;
-                                console.log(decodeURI(JSON.stringify(deviceJson)));
-                                try{
-                                    var jsonArray = [];
+            var prevMachineJSON;
+            var prevProductJSON;
+            var finishedDevices = [];
+            var productArray = [];
+            $.getJSON("https://revelvendingdbapi20170808101559.azurewebsites.net/api/products", function (data) {
+                prevProductJSON = data;
+                $.getJSON("https://revelvendingdbapi20170808101559.azurewebsites.net/api/machines", function (data) {
+                    prevMachineJSON = data;
+                    $.getJSON("https://api.reveldigital.com/api/media?api_key="+apiKey, function (data) {
+                        imageJSON = data;
+                        var regKeyArray = [];
+                        $.getJSON("https://api.reveldigital.com/api/devices?api_key="+apiKey+"&include_snap=false&group_name=VendingMachines", function (data) {
+                            for(var x = 0; x<data.length; x++){
+                                regKeyArray.push(data[x]["registration_key"]);
+                            }
+                            var deviceJson;
+                            for(var y = 0; y<regKeyArray.length; y++) {
+                                $.getJSON("https://svc1.reveldigital.com/v2/device/schedule/get/" + regKeyArray[y] + "?format=json", function (data) {
+                                    console.log("Processing "+data["reveldigital"]["device"]["name"]);
+                                    var jsonString = "{\"id\":\""+encodeURIComponent(data["reveldigital"]["device"]["id"])+"\",\"contents\":null,\"name\":\""+encodeURIComponent(data["reveldigital"]["device"]["name"])+"\",\"location\":null}";
+                                    try {
+                                        deviceJson = JSON.parse(jsonString);
+                                        try{
+                                            var locationJsonString = "{\"address\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["address1"])+"\",\"city\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["city"])+"\",\"county\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["county"])+"\",\"state\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["state"])+"\",\"postal_code\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["postalcode"])+"\",\"country\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["country"])+"\",\"latitude\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["latitude"])+"\",\"longitude\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["longitude"])+"\"}";
+                                            var locationJson = JSON.parse(locationJsonString);
+                                            deviceJson["location"] = locationJson;
+                                            try {
+                                                var jsonArray = [];
 
-                                    if(data["reveldigital"]["schedule"].length>0){
+                                                if (data["reveldigital"]["schedule"].length > 0) {
 
-                                        for(var z = 0; z<data["reveldigital"]["schedule"][0]["template"]["module"].length;z++){
+                                                    for (var z = 0; z < data["reveldigital"]["schedule"][0]["template"]["module"].length; z++) {
 
-                                            if(data["reveldigital"]["schedule"][0]["template"]["module"][z]["type"]=="Image"){
+                                                        if (data["reveldigital"]["schedule"][0]["template"]["module"][z]["type"] == "Image") {
 
-                                                if(data["reveldigital"]["schedule"][0]["template"]["module"][z].hasOwnProperty("playlist")){
+                                                            if (data["reveldigital"]["schedule"][0]["template"]["module"][z].hasOwnProperty("playlist")) {
 
-                                                    if(data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"].hasOwnProperty("source")) {
+                                                                if(data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["type"]=="Image") {
 
-                                                        if(data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["source"].length>0) {
+                                                                    if (data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"].hasOwnProperty("source")) {
 
-                                                            var image = data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["source"][0]["file"];
-                                                            var componentJson = {"id":\""+encodeURIComponent(data["reveldigital"]["device"]["location"][""])+"\","quantity":\""+encodeURIComponent(data["reveldigital"]["device"]["location"][""])+"\","row":\""+encodeURIComponent(data["reveldigital"]["device"]["location"][""])+"\","column":\""+encodeURIComponent(data["reveldigital"]["device"]["location"][""])+"\","price":99999999}
+                                                                        if (data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["source"].length > 0) {
+                                                                            var image = data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["source"][0]["file"];
+                                                                            var row = data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["name"].charAt(3);
+                                                                            var column = data["reveldigital"]["schedule"][0]["template"]["module"][z]["playlist"]["name"].charAt(1);
+                                                                            if(!productArray.hasOwnProperty(image["id"])) {
+                                                                                productArray.push(image["filename"]);
+                                                                            }
+                                                                            var imageJsonString = "{\"id\":"+image["id"]+",\"quantity\":-1,\"row\":"+row+",\"column\":"+column+",\"price\":99999.01}";
+                                                                            jsonArray.push(JSON.parse(imageJsonString));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
+                                                    if(jsonArray.length>0){
+                                                        deviceJson["contents"] = jsonArray;
+                                                        console.log(decodeURI(JSON.stringify(deviceJson)));
+                                                    }
+                                                    finishedDevices.push(JSON.parse(decodeURI(JSON.stringify(deviceJson))));
                                                 }
+                                            }catch (e) {
+                                                alert(e);
                                             }
                                         }
+                                        catch (e){
+                                            alert(e);
+                                        }
+                                        alert("processed")
+                                    }catch(e) {
+                                        alert(e);
                                     }
-                                }catch (e) {
-                                    alert(e);
-                                }
-                            }
-                            catch (e){
-                                alert(e);
-                            }
-                            alert("processed")
-                        }catch(e) {
-                            alert(e);
-                        }
+                                    //product update
+                                    var method ="";
+                                    for(var index = 0; index<finishedDevices.length; index++){
+                                        var putEnding = "";
+                                        if(idInJson(finishedDevices[index]["id"],prevMachineJSON)){
+                                            method = "PUT";
+                                            putEnding = '/'+finishedDevices[index]["id"];
+                                        }else{
+                                            method = "POST";
+                                        }
+                                        $.ajax
+                                        ({
+                                            type: method,
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                            },
+                                            //the url where you want to sent the userName and password to
+                                            url: 'https://revelvendingdbapi20170808101559.azurewebsites.net/api/machines'+putEnding,
+                                            dataType: 'json',
+                                            async: true,
+                                            data: JSON.stringify(finishedDevices[index]),
+                                            success: function () {
+                                                console.log("success")
+                                            }
+                                        })
+                                    }
+                                    for(var i = 0; i<productArray.length; i++) {
 
+
+                                            var putEnding = "";
+                                            var productIndex = -1;
+                                            var imageStr;
+                                            for (var x = 0; x < imageJSON.length; x++) {
+                                                if (productArray[i] == imageJSON[x]["file_name"]) {
+                                                    productIndex = x;
+                                                    imageStr = "{\"id\":\"" + imageJSON[x]["file_name"] + "\",\"name\":\"" + imageJSON[x]["name"] + "\", \"image_URL\":\"" + imageJSON[x]["file_url"] + "\"}";
+                                                    break;
+                                                }
+
+                                            }
+                                            if (productIndex > -1) {
+                                                if (filenameInJson(productArray[i], prevProductJSON)) {
+                                                    method = "PUT";
+                                                    putEnding = '/' + productArray[i];
+                                                } else {
+                                                    method = "POST";
+                                                }
+                                                console.log("made it");
+
+                                                $.ajax
+                                                ({
+                                                    type: method,
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    //the url where you want to sent the userName and password to
+                                                    url: 'https://revelvendingdbapi20170808101559.azurewebsites.net/api/products' + putEnding,
+                                                    dataType: 'json',
+                                                    async: true,
+                                                    data: imageStr,
+                                                    success: function () {
+                                                        console.log("success")
+                                                    },
+                                                    failure: function (){
+                                                        console.log("failure");
+                                                    }
+                                                })
+
+
+                                            }
+
+                                    }
+
+                                }, 1000);
+                            }
+                        }, 1000);
                     }, 1000);
+                }, 1000);
+            }, 1000);
+
+
+
+        }
+        function idInJson(id, array2) {
+            for(var x = 0; x<array2.length; x++){
+                if(array2[x]["id"]==id){
+                    return true;
                 }
-            }, 1000); 
+            }
+            return false;
+        }
+        function filenameInJson(id, array2) {
+            for(var x = 0; x<array2.length; x++){
+                if(array2[x]["filename"]==id){
+                    return x;
+                }
+            }
+            return false;
         }
         /*
         document.getElementById("settings").addEventListener("click", function(){
