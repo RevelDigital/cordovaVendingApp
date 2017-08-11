@@ -26,83 +26,95 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-light_blue.min.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/jquery.dynatable.js"></script>
+
+
+
 
     <title>Hello World</title>
     <style>
-        .mdl-layout__header-row{
-            padding-left: 1.5%;
-        }
+
         table{
             width: 100%;
         }
-        .box {
-            position:relative;
+        .center {
+            margin: auto;
+            width: 100%;
+            padding: 10px;
         }
-        .bet_time {
-            position: fixed;
-            bottom:0;
-            right:0;
-            margin-bottom: 4%;
-            margin-right: 4%;
-            z-index:10;
+        .mdl-layout__header-row{
+            padding-left: 0;
         }
+        #back{
+            margin: auto;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        @keyframes moveCenter{
+            0%   {width: 33%}
+            100% {width: 100%;}
+        }
+        #transactions{
 
-        .material-icons.md-light { color: rgba(255, 255, 255, 1); }
-        footer{
-            padding-top: 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 9%;
-            z-index: 10;
         }
-        .noPadding{
+        .positionFix{
+            top: 0;
+            bottom: 0;
+        }
+        .paddingFix{
             padding: 0;
         }
-        .fullwidth{
-            width: 100%;
+        #back{
+            visibility: collapse;
+        }
+        .mdl-button--floating-action {
+            bottom:30px;
+            padding-top:24px;
+            position:fixed;
+            right:24px;
+            z-index:998;
         }
     </style>
+
 </head>
 
 <body>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <main class="mdl-layout__content">
         <div class="page-content">
-            <div class="mdl-color--blue-300 mdl-color-text--green-400 mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
                 <div class="mdl-tabs__tab-bar ">
-                    <a href="#machine-panel" class="mdl-tabs__tab is-active">Machines</a>
-                    <a href="#transaction-panel" class="mdl-tabs__tab">Transactions</a>
-                    <a href="#settings-panel" class="mdl-tabs__tab">Settings</a>
+
+                    <a id="machines" href="#machine-panel" class="mdl-tabs__tab is-active">Machines</a>
+                    <a id="transactions" href="#transaction-panel" class="mdl-tabs__tab">Transactions</a>
+                    <a id="settings" href="#settings-panel" class="mdl-tabs__tab">Settings</a>
                 </div>
-                    <div class="mdl-tabs__panel is-active" id="machine-panel">
-                        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+
+                    <div class="mdl-tabs__panel" id="machine-panel">
+                        <table id="my-final-table" class="tableHeading mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                             <thead>
-                            <tr>
-                                <th class="mdl-data-table__cell--non-numeric">Machine Name</th>
-                                <th>Status</th>
-                                <th>Location</th>
-                            </tr>
+                            <th>Name</th>
+                            <th>Total Sold</th>
+                            <th>Location</th>
+
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                     </div>
-                    <div class="mdl-tabs__panel" id="transaction-panel">
+                    <div class="mdl-tabs__panel is-active" id="transaction-panel">
                         <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                             <thead>
                             <tr>
+
                                 <th class="mdl-data-table__cell--non-numeric">Transaction Type</th>
                                 <th>Total Sold</th>
                             </tr>
+
                             </thead>
                             <tbody>
 
@@ -110,26 +122,29 @@
                         </table>
                     </div>
                     <div class="mdl-tabs__panel" id="settings-panel">
-                        <form action="#">
+
+                        <form class="center settingClass" action="#">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" id="sample3">
                                 <label class="mdl-textfield__label" for="sample3">API Key...</label>
                             </div>
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
-                                <input type="checkbox" id="switch-1" class="mdl-switch__input" checked>
-                                <span class="mdl-switch__label"></span>
-                            </label>
-                            hello
+
+                            <button  class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Update Database
+                            </button>
+
                         </form>
                     </div>
                 </div>
-            <div id="bottom-snackbar" class="fullwidth mdl-js-snackbar mdl-snackbar">
+            <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>
                 <button class="mdl-snackbar__action" type="button"></button>
             </div>
 
         </div>
-
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-button--floating-action">
+            <i class="material-icons">search</i>
+        </button>
     </main>
 
 </div>
@@ -140,29 +155,16 @@
         app.initialize();
     </script>
     <script>
-        //showSnackBarSettings();
-        updateMachines();
-        function showSnackBarSettings() {
-            'use strict';
-            var snackbarContainer = document.getElementById('#bottom-snackbar');
-            var handler = function(event) {
-                alert("pressed");
-                snackbarContainer.MaterialSnackbar.cleanup_
-                && snackbarContainer.MaterialSnackbar.cleanup_();
-                !snackbarContainer.MaterialSnackbar.cleanup_
-                && snackbarContainer.classList.remove("mdl-snackbar--active");
-            };
-                'use strict';
-                var data = {
-                    message: 'Settings Modified',
-                    timeout:100000000,
-                    actionHandler: handler,
-                    actionText: 'Save Changes'
-                };
-                snackbarContainer.MaterialSnackbar.showSnackbar(data);
-        };
+        //$('#settings').hide();
+        //$('#machines').hide();
+        $('back').hide();
+        var transactionsArray = [];
+        $('.mdl-layout__header-row').height(32);
 
-        function updateMachines(){
+        //showSnackBarSettings();
+
+        /*
+        function updateDatabase(){
             var apiKey= "PvykAYhri1sINCnWhEqC3A";
             var imageJSON;
             var prevMachineJSON;
@@ -189,8 +191,7 @@
                                         deviceJson = JSON.parse(jsonString);
                                         try{
                                             var locationJsonString = "{\"address\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["address1"])+"\",\"city\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["city"])+"\",\"county\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["county"])+"\",\"state\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["state"])+"\",\"postal_code\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["postalcode"])+"\",\"country\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["country"])+"\",\"latitude\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["latitude"])+"\",\"longitude\":\""+encodeURIComponent(data["reveldigital"]["device"]["location"]["longitude"])+"\"}";
-                                            var locationJson = JSON.parse(locationJsonString);
-                                            deviceJson["location"] = locationJson;
+                                            deviceJson["location"] = JSON.parse(locationJsonString);
                                             try {
                                                 var jsonArray = [];
 
@@ -268,7 +269,7 @@
                                     for(var i = 0; i<productArray.length; i++) {
 
 
-                                            var putEnding = "";
+                                            var putEnd = "";
                                             var productIndex = -1;
                                             var imageStr;
                                             for (var x = 0; x < imageJSON.length; x++) {
@@ -282,7 +283,7 @@
                                             if (productIndex > -1) {
                                                 if (filenameInJson(productArray[i], prevProductJSON)) {
                                                     method = "PUT";
-                                                    putEnding = '/' + productArray[i];
+                                                    putEnd = '/' + productArray[i];
                                                 } else {
                                                     method = "POST";
                                                 }
@@ -319,10 +320,9 @@
                     }, 1000);
                 }, 1000);
             }, 1000);
-
-
-
         }
+
+
         function idInJson(id, array2) {
             for(var x = 0; x<array2.length; x++){
                 if(array2[x]["id"]==id){
@@ -339,6 +339,74 @@
             }
             return false;
         }
+         */
+        //DOMSubtreeModified
+
+
+
+        $('body').on('change', '.settingClass',function(){
+                'use strict';
+                var snackbarContainer = document.querySelector('#snackbar');
+
+                var handler = function() {
+                    snackbarContainer.MaterialSnackbar.cleanup_
+                    && snackbarContainer.MaterialSnackbar.cleanup_();
+                    !snackbarContainer.MaterialSnackbar.cleanup_
+                    && snackbarContainer.classList.remove("mdl-snackbar--active");
+                };
+
+                if(!snackbarContainer.classList.contains("mdl-snackbar--active")) {
+                    'use strict';
+
+                    var data = {
+                        message: 'Settings Were Changed',
+                        timeout: 200000,
+                        actionHandler: handler,
+                        actionText: 'Save Changes'
+                    };
+                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                }
+        });
+
+
+
+        $(document).ready(function() {
+
+            var machines = [];
+            $.getJSON("https://revelvendingdbapi20170808101559.azurewebsites.net/api/machines", function (data) {
+                for(var x = 0; x<data.length; x++){
+                    var json = {"name":null,"totalSold":"N/A","city":null};
+                    var city = "N/A"
+                    var name = data[x]['name'];
+                    if(data[x]['location']!=null){
+                        if(data[x]['location']['city']){
+                            city = data[x]['location']['city']
+                        }
+                    }
+                    json['name']=name;
+                    json['city']=city;
+                    machines.push(json);
+
+                }
+                var dynatable = $('#my-final-table').dynatable({
+                    features: {
+                        paginate: false,
+                        sort: true,
+                        pushState: false,
+                        search: false,
+                        recordCount: true,
+                        perPageSelect: false
+                    },
+                    table: {
+                        defaultColumnIdStyle: 'underscore'
+
+                    },
+                    dataset: {
+                        records: machines
+                    }
+                }).data('dynatable');
+            })
+        });
         /*
         document.getElementById("settings").addEventListener("click", function(){
             deactivateTabs();

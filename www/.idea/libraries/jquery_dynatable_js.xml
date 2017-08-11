@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="jquery.dynatable.js" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$USER_HOME$/Downloads/jspkg-archive/jquery.dynatable.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/js/jquery.dynatable.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
