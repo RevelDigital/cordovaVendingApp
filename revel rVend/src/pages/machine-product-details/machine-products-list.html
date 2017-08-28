@@ -1,0 +1,31 @@
+<ion-header>
+
+    <ion-navbar>
+        <ion-searchbar [(ngModel)]="searchKey" (ionInput)="onInput($event)"
+                       (ionClear)="onCancel($event)"
+                       (ionCancel)="onCancel($event)"></ion-searchbar>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="machine-product-list">
+
+    <ion-list>
+
+
+        <ion-item-sliding *ngFor="let product of productDetails">
+            <button ion-item (click)="openProductEditDetail(product)">
+                <ion-thumbnail item-left>
+                    <img src="{{product.image_URL}}"/>
+                </ion-thumbnail>
+                <h2>{{product.name}}</h2>
+              <p>$1.20 ∙ 13 in Stock</p>
+            </button>ionic
+        </ion-item-sliding>
+
+    </ion-list>
+
+
+
+</ion-content>
+
+

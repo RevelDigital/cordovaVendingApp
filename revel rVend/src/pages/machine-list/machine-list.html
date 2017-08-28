@@ -1,0 +1,42 @@
+<ion-header>
+
+    <ion-navbar>
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-searchbar [(ngModel)]="searchKey" (ionInput)="onInput($event)"
+                       (ionClear)="onCancel($event)"
+                       (ionCancel)="onCancel($event)"></ion-searchbar>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="property-list">
+
+    <ion-list *ngIf="viewMode==='list'">
+
+        <ion-item-sliding *ngFor="let machine of machines">
+            <button ion-item (click)="openMachineDetail(machine)">
+                <ion-thumbnail item-left>
+                    <img src="{{machine.snapUrl}}"/>
+                </ion-thumbnail>
+                <h2>{{machine.name}}</h2>
+                <p>{{machine.location.city}}, {{machine.location.state}}</p>
+            </button>ionic
+        </ion-item-sliding>
+
+    </ion-list>
+
+    <div *ngIf="viewMode==='map'" style="width:100%;height:100%;" id="map"></div>
+
+</ion-content>
+
+<ion-footer padding>
+    <ion-segment [(ngModel)]="viewMode">
+        <ion-segment-button value="list">
+            <ion-icon name="list"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="map" (ionSelect)="showMap()">
+            <ion-icon name="map"></ion-icon>
+        </ion-segment-button>
+    </ion-segment>
+</ion-footer>

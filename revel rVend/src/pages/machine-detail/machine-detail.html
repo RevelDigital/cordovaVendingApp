@@ -1,0 +1,79 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Device Details</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+    <ion-card *ngIf="machine.id">
+        <img src="{{machine.snapUrl}}"/>
+        <ion-card-content>
+            <h2 class="card-title">{{machine.name}}</h2>
+            <p>{{machine.location.address}}, {{machine.location.city}} {{machine.location.state}}</p>
+        </ion-card-content>
+        <ion-list>
+
+            <ion-item>
+                <ion-icon item-left name="alert"></ion-icon>
+                <h3>Status</h3>
+                <ion-note item-right>Good</ion-note>
+            </ion-item>
+            <ion-item>
+                <ion-icon item-left name="wifi"></ion-icon>
+                <h3>Connection</h3>
+                <ion-note *ngIf="onlineStatus=='Online'" item-right>{{onlineStatus}}</ion-note>
+              <ion-note *ngIf="onlineStatus!='Online'" item-right class="red">{{onlineStatus}}</ion-note>
+            </ion-item>
+            <ion-item>
+                <ion-icon item-left name="snow"></ion-icon>
+                <h3>Temp</h3>
+                <ion-note item-right>0&#176;C</ion-note>
+            </ion-item>
+          <ion-item>
+            <ion-icon item-left name="thermometer"></ion-icon>
+            <h3>Outside Temp</h3>
+            <ion-note item-right>25&#176;C</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon item-left name="speedometer"></ion-icon>
+            <h3>Conpressor Status</h3>
+            <ion-note item-right>Off</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon item-left name="bulb"></ion-icon>
+            <h3>Light Status</h3>
+            <ion-note item-right>On</ion-note>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon item-left name="sunny"></ion-icon>
+            <h3>Ambiance Light Level</h3>
+            <ion-note item-right>100 ftcd</ion-note>
+          </ion-item>
+        </ion-list>
+
+        <ion-item>
+            <button ion-button icon-left (click)="goToProducts(machine)" clear item-left>
+                <ion-icon name="albums"></ion-icon>
+                Contents
+            </button>
+          <button ion-button icon-left (click)="goToMessages(machine)" clear item-right>
+            <ion-icon name="clipboard"></ion-icon>
+            Messages
+          </button>
+            <button ion-button icon-left (click)="goToTransactions(machine)" clear item-right>
+                <ion-icon name="swap"></ion-icon>
+                Transactions
+            </button>
+        </ion-item>
+
+    </ion-card>
+</ion-content>
